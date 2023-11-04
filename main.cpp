@@ -240,9 +240,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//デバッグ用
 		Novice::ScreenPrintf(0, 0, "particleFlag=%d", particleFlag);
 
-		for (int i = 0; i < 20; i++)
+		for (int i = 0; i < 30; i++)
 		{
-			Novice::ScreenPrintf(0, 30 + i * 20, "fanceParticle[%d].velocity.x=%f", i, fanceParticle[i].velocity.x);
+			Novice::ScreenPrintf(0, 30 + i * 20, "fP[%d].vel.x=%f", i, fanceParticle[i].velocity.x);
 
 			if (fanceParticle[i].velocity.x > 0)
 			{
