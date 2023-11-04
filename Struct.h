@@ -1,18 +1,18 @@
 #pragma once
 #include "Color.h"
-
-struct Vector2
-{
-	float x;
-	float y;
-};
+#include "MyVector2.h"
+//struct Vector2
+//{
+//	float x;
+//	float y;
+//};
 
 
 typedef struct Particle
 {
-	Vector2 pos;
-	Vector2 velocity;
-	Vector2 acceleration;
+	Vec2f pos;
+	Vec2f velocity;
+	Vec2f acceleration;
 	float radius;
 	float lifeTime;
 	float currentTime;
@@ -23,10 +23,10 @@ typedef struct Particle
 }Particle;
 typedef struct Emitter
 {
-	Vector2 pos;
-	Vector2 radius;
+	Vec2f pos;
+	Vec2f radius;
 	float minLife;
 	float maxLife;
-	Vector2 direction;
+	Vec2f direction;
 	Color color;
 }Emitter;

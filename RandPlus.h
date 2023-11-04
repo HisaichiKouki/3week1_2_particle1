@@ -7,6 +7,6 @@
 
 int GetRand();
 
-Vector2 GetRandPos(Vector2 radius);
+Vec2f GetRandPos(Vec2f radius);
 
 int GetRandMinMax(int min, int max);

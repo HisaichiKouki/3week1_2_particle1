@@ -116,5 +116,6 @@
     <ClInclude Include="RandPlus.h" />
     <ClInclude Include="Struct.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="MyVector2.h" />
   </ItemGroup>
 </Project>

@@ -149,6 +149,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="C:\KamataEngine\DirectXGame\scene\GameScene.h" />
     <ClInclude Include="C:\KamataEngine\Adapter\Novice.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="MyVector2.h" />
     <ClInclude Include="RandPlus.h" />
     <ClInclude Include="Struct.h" />
   </ItemGroup>

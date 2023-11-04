@@ -28,7 +28,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	float particleBound = 0.5f;//バウンドの係数
 
 	bool particleFlag = false;//スペースでパーティクル発生
-	int particleTimerMax = 15;//発生持続時間
+	int particleTimerMax = 10;//発生持続時間
 	int particleTimer = 0;
 
 

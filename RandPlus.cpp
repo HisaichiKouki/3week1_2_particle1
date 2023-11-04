@@ -5,10 +5,10 @@ int GetRand()
 	return rand();
 }
 
-Vector2 GetRandPos(Vector2 radius)
+Vec2f GetRandPos(Vec2f radius)
 {
-	if (radius.x != 0 && radius.y != 0) return Vector2({ float(rand() % int(radius.x * 4 - (radius.x * 2 - 1))) , float(rand() % int(radius.y * 4 - (radius.y * 2 - 1))) });
-	return Vector2{ 0,0 };
+	if (radius.x != 0 && radius.y != 0) return Vec2f({ float(rand() % int(radius.x * 4 - (radius.x * 2 - 1))) , float(rand() % int(radius.y * 4 - (radius.y * 2 - 1))) });
+	return Vec2f{ 0,0 };
 }
 
 int GetRandMinMax(int min, int max)
