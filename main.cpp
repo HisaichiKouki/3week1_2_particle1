@@ -18,7 +18,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	const int kFanceParticleNum = 200;//パーティクルの数
 	Particle fanceParticle[kFanceParticleNum]{};
-	fanceParticle[0].lifeTime = 60;//パーティクルの表示時間
+	fanceParticle[0].lifeTime = 45;//パーティクルの表示時間
 	for (int i = 0; i < kFanceParticleNum; i++)
 	{
 		fanceParticle[i].acceleration.x = 0.1f;//減速させるため
@@ -79,7 +79,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			fance.radius.y = 1;
 		}
 
-		if (keys[DIK_SPACE]&&!preKeys[DIK_SPACE])
+		if (keys[DIK_SPACE])//&&!preKeys[DIK_SPACE]
 		{
 			particleFlag = true;
 		}
@@ -100,13 +100,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						fanceParticle[i].radius = (float)GetRandMinMax(5, 10);
 						//fanceParticle[i].max = (float)GetRandMinMax(30, 80);
 						fanceParticle[i].currentTime++;
-						fanceParticle[i].color.color[0] = GetRandMinMax(100, 255);//赤
+						fanceParticle[i].color.color[0] = GetRandMinMax(000, 000);//赤
 						fanceParticle[i].color.color[1] = GetRandMinMax(000, 150);//緑
-						fanceParticle[i].color.color[2] = GetRandMinMax(000, 000);//青
+						fanceParticle[i].color.color[2] = GetRandMinMax(150, 255);//青
 						fanceParticle[i].color.color[3] = 255;//透明度
 						fanceParticle[i].velocity.x = (float)GetRandMinMax(-3, 3);//左右のブレ
 						fanceParticle[i].velocity.y = (float)GetRandMinMax(-10, -3);//どのくらい飛び上がるか
 						fanceParticle[i].boundPoint = -fanceParticle[i].velocity.y;//バウンドの場所を代入。床を作るイメージ
+						fanceParticle[i].raito = 0;
 
 						//1フレでより多く出したい時
 						if (i < kFanceParticleNum - 1)
@@ -116,13 +117,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							fanceParticle[i + 1].radius = (float)GetRandMinMax(5, 10);
 							//fanceParticle[i + 1].max = (float)GetRandMinMax(30, 80);
 							fanceParticle[i + 1].currentTime++;
-							fanceParticle[i + 1].color.color[0] = GetRandMinMax(100, 255);
+							fanceParticle[i + 1].color.color[0] = GetRandMinMax(000, 000);
 							fanceParticle[i + 1].color.color[1] = GetRandMinMax(000, 150);
-							fanceParticle[i + 1].color.color[2] = GetRandMinMax(000, 000);
+							fanceParticle[i + 1].color.color[2] = GetRandMinMax(150, 255);
 							fanceParticle[i + 1].color.color[3] = 255;
 							fanceParticle[i + 1].velocity.x = float(GetRandMinMax(-3, 3));
 							fanceParticle[i + 1].velocity.y = (float)GetRandMinMax(-10, -3);
 							fanceParticle[i + 1].boundPoint = -fanceParticle[i + 1].velocity.y;
+							fanceParticle[i + 1].raito = 0;
 						}
 						break;
 					}
@@ -142,7 +144,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			for (int i = 0; i < kFanceParticleNum; i++)
 			{
 
-				
+
 				//パーティクルが生きてる時
 				if (fanceParticle[i].currentTime != 0 && fanceParticle[i].currentTime < fanceParticle[0].lifeTime)
 				{
@@ -157,7 +159,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						}
 						if (fanceParticle[i].velocity.x > 0)
 						{
-							fanceParticle[i].velocity.x -=0.1f ;//fanceParticle[i].acceleration.x
+							fanceParticle[i].velocity.x -= 0.1f;//fanceParticle[i].acceleration.x
 						}
 					}
 					else
@@ -211,11 +213,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 				else
 				{
-					
+
 					fanceParticle[i].currentTime = 0;
 					fanceParticle[i].velocity = { 0,0 };
 					fanceParticle[i].color.color[3] = 0;
-					fanceParticle[i].raito = 0;
 				}
 			}
 		}
@@ -228,41 +229,44 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// --------------------↓描画処理ここから-------------------- ///
 		///                                                            ///
 
+		Novice::DrawBox(0, 0, 1280, 720, 0, 0x223344ff,kFillModeSolid);
 		Novice::DrawBox(int(fance.pos.x - fance.radius.x), int(fance.pos.y - fance.radius.y), int(fance.radius.x * 2), int(fance.radius.y * 2), 0, WHITE, kFillModeWireFrame);
 
+		Novice::SetBlendMode(kBlendModeAdd);
 		for (int i = 0; i < kFanceParticleNum; i++)
 		{
 			Novice::DrawEllipse(int(fanceParticle[i].pos.x), int(fanceParticle[i].pos.y), int(fanceParticle[i].radius), int(fanceParticle[i].radius), 0, ColorGradation({ fanceParticle[i].color.color[0],fanceParticle[i].color.color[1],fanceParticle[i].color.color[2],fanceParticle[i].color.color[3] }, { 0xff,0xff,0xff,0x00 }, fanceParticle[i].raito, 100), kFillModeSolid);
 		}
 
+		Novice::SetBlendMode(kBlendModeNormal);
 
 
-		//デバッグ用
-		Novice::ScreenPrintf(0, 0, "particleFlag=%d", particleFlag);
+		////デバッグ用
+		//Novice::ScreenPrintf(0, 0, "particleFlag=%d", particleFlag);
 
-		for (int i = 0; i < 30; i++)
-		{
-			Novice::ScreenPrintf(0, 30 + i * 20, "fP[%d].vel.x=%f", i, fanceParticle[i].velocity.x);
+		//for (int i = 0; i < 30; i++)
+		//{
+		//	Novice::ScreenPrintf(0, 30 + i * 20, "fP[%d].vel.x=%f", i, fanceParticle[i].velocity.x);
 
-			if (fanceParticle[i].velocity.x > 0)
-			{
-				Novice::DrawBox(0, 30 + i * 20, 100, 20, 0, RED, kFillModeSolid);
-			}
-			else if (fanceParticle[i].velocity.x < 0)
-			{
-				Novice::DrawBox(0, 30 + i * 20, 100, 20, 0, BLUE, kFillModeSolid);
-			}
-			else if (fanceParticle[i].velocity.x == 0)
-			{
-				Novice::DrawBox(0, 30 + i * 20, 100, 20, 0, 0xaaaa00ff, kFillModeSolid);
+		//	if (fanceParticle[i].velocity.x > 0)
+		//	{
+		//		Novice::DrawBox(0, 30 + i * 20, 100, 20, 0, RED, kFillModeSolid);
+		//	}
+		//	else if (fanceParticle[i].velocity.x < 0)
+		//	{
+		//		Novice::DrawBox(0, 30 + i * 20, 100, 20, 0, BLUE, kFillModeSolid);
+		//	}
+		//	else if (fanceParticle[i].velocity.x == 0)
+		//	{
+		//		Novice::DrawBox(0, 30 + i * 20, 100, 20, 0, 0xaaaa00ff, kFillModeSolid);
 
-			}
-		}
-		Novice::DrawLine(int(min), 0, int( min), 720, BLUE);
-		Novice::DrawLine(int( max), 0, int( max), 720, RED);
+		//	}
+		//}
+		//Novice::DrawLine(int(min), 0, int(min), 720, BLUE);
+		//Novice::DrawLine(int(max), 0, int(max), 720, RED);
 
-		Novice::ScreenPrintf(200, 0, "min=%f max=%f", 640-min, 640 - max);
-		Novice::ScreenPrintf(600, 0, ">>SPACE<<");
+		//Novice::ScreenPrintf(200, 0, "min=%f max=%f", 640 - min, 640 - max);
+		//Novice::ScreenPrintf(600, 0, ">>SPACE<<");
 		///                                                            ///
 		/// --------------------↑描画処理ここまで-------------------- ///
 		///                                                            ///
