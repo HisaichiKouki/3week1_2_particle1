@@ -31,4 +31,5 @@ typedef struct Emitter
 	int particleTimerMax ;//発生持続時間を設定
 	int particleTimerCount;//発生持続時間をカウント
 	float particleBound;//バウンドの係数
+	int spownCount;
 }Emitter;
