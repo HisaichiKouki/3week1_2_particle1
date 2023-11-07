@@ -1,7 +1,8 @@
-typedef struct Color
-{
-	unsigned int color[4];//0 RED 1 GREEN 2 BLUE 3 ALPHA
-}Color;
+#include "Color.h"
+//typedef struct Color
+//{
+//	unsigned int color[4];//0 RED 1 GREEN 2 BLUE 3 ALPHA
+//}Color;
 
 unsigned int DegreeColorTranceforme(Color befor)
 {

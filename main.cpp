@@ -2,6 +2,7 @@
 #include "Struct.h"
 #include "Color.h"
 #include "RandPlus.h"
+#include "ImGuiManager.h"
 const char kWindowTitle[] = "LC1A_20_ヒサイチ_コウキ";
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -15,6 +16,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	fance.pos = { 640,360 };//出現場所の中心
 	fance.radius = { 10,300 };//半径
+	fance.particleSpawnFlag = false; //スペースでパーティクル発生
+	fance.particleTimerMax = 10;//発生持続時間を設定
+	fance.particleBound = 0.5f;//バウンドの係数
 
 	const int kFanceParticleNum = 200;//パーティクルの数
 	Particle fanceParticle[kFanceParticleNum]{};//パーティクルの情報
@@ -25,11 +29,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		fanceParticle[i].acceleration.y = 0.8f;
 	}
 
-	float particleBound = 0.5f;//バウンドの係数
+	//float particleBound = 0.5f;//バウンドの係数
 
-	bool particleFlag = false;//スペースでパーティクル発生
-	int particleTimerMax = 10;//発生持続時間を設定
-	int particleTimer = 0;//発生持続時間をカウント
+	//bool particleFlag = false;//スペースでパーティクル発生
+	//int particleTimerMax = 10;//発生持続時間を設定
+	//int particleTimer = 0;//発生持続時間をカウント
 
 
 
@@ -83,12 +87,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (keys[DIK_SPACE] && !preKeys[DIK_SPACE])//&&!preKeys[DIK_SPACE]
 		{
 			//パーティクル生成フラグを立てる
-			particleFlag = true;
+			fance.particleSpawnFlag = true;
 		}
 
 
 		
-			if (particleFlag)
+			if (fance.particleSpawnFlag)
 			{
 				//パーティクルの生成
 				for (int i = 0; i < kFanceParticleNum; i++)
@@ -130,15 +134,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 				}
 
-				if (particleTimer < particleTimerMax)
+				if (fance.particleTimerCount < fance.particleTimerMax)
 				{
-					particleTimer++;//パーティクル出現時間を進める
+					fance.particleTimerCount++;//パーティクル出現時間を進める
 				}
 				else
 				{
 					//パーティクル出現時間が指定した値を超えたら生成をやめる
-					particleFlag = false;
-					particleTimer = 0;
+					fance.particleSpawnFlag = false;
+					fance.particleTimerCount = 0;
 				}
 			}
 			//パーティクルの移動
@@ -181,8 +185,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					if (fanceParticle[i].velocity.y > fanceParticle[i].boundPoint)
 					{
 						//y軸のvelocityを反転&減速して、仮想床の値を更新
-						fanceParticle[i].velocity.y *= -particleBound;
-						fanceParticle[i].boundPoint *= particleBound;
+						fanceParticle[i].velocity.y *= -fance.particleBound;
+						fanceParticle[i].boundPoint *= fance.particleBound;
 					}
 
 
@@ -240,6 +244,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Novice::SetBlendMode(kBlendModeNormal);
 
 
+		ImGui::Begin("test");
+		ImGui::SliderFloat("fance.pos.x", &fance.pos.x, 0, 1280);
+		ImGui::SliderFloat("fance.pos.y", &fance.pos.y, 0, 720);
+		ImGui::SliderFloat("fance.radius.x", &fance.radius.x, 1, 1000);
+		ImGui::SliderFloat("fance.radius.y", &fance.radius.y, 1, 1000);
+
+		ImGui::End();
 		
 		///                                                            ///
 		/// --------------------↑描画処理ここまで-------------------- ///

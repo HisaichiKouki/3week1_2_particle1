@@ -1,11 +1,7 @@
-#pragma once
+﻿#pragma once
 #include "Color.h"
 #include "MyVector2.h"
-//struct Vector2
-//{
-//	float x;
-//	float y;
-//};
+
 
 
 typedef struct Particle
@@ -21,6 +17,8 @@ typedef struct Particle
 	float max;
 	float boundPoint;
 }Particle;
+
+
 typedef struct Emitter
 {
 	Vec2f pos;
@@ -29,4 +27,8 @@ typedef struct Emitter
 	float maxLife;
 	Vec2f direction;
 	Color color;
+	bool particleSpawnFlag ;//フラグでパーティクル発生
+	int particleTimerMax ;//発生持続時間を設定
+	int particleTimerCount;//発生持続時間をカウント
+	float particleBound;//バウンドの係数
 }Emitter;

@@ -40,6 +40,12 @@
     </ClCompile>
     <ClCompile Include="RandPlus.cpp" />
     <ClCompile Include="Color.cpp" />
+    <ClCompile Include="DrawPlus.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix3Calc.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -117,5 +123,7 @@
     <ClInclude Include="Struct.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="MyVector2.h" />
+    <ClInclude Include="DrawPlus.h" />
+    <ClInclude Include="Matrix3Calc.h" />
   </ItemGroup>
 </Project>
