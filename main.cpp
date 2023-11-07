@@ -13,11 +13,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Emitter fance{};//パーティクル発生元の情報
 
-	fance.pos = { 640,360 };
-	fance.radius = { 10,300 };
+	fance.pos = { 640,360 };//出現場所の中心
+	fance.radius = { 10,300 };//半径
 
 	const int kFanceParticleNum = 200;//パーティクルの数
-	Particle fanceParticle[kFanceParticleNum]{};
+	Particle fanceParticle[kFanceParticleNum]{};//パーティクルの情報
 	fanceParticle[0].lifeTime = 45;//パーティクルの表示時間
 	for (int i = 0; i < kFanceParticleNum; i++)
 	{
@@ -28,11 +28,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	float particleBound = 0.5f;//バウンドの係数
 
 	bool particleFlag = false;//スペースでパーティクル発生
-	int particleTimerMax = 10;//発生持続時間
-	int particleTimer = 0;
+	int particleTimerMax = 10;//発生持続時間を設定
+	int particleTimer = 0;//発生持続時間をカウント
 
 
-	float min = 1280;
+	float min = 1280;//デバッグ用
 	float max = 0;
 
 	int timer = 0;
@@ -71,6 +71,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{
 			fance.radius.x -= 4;
 		}
+
+		//範囲が0以下にならないように
 		if (fance.radius.x <= 0)
 		{
 			fance.radius.x = 1;
@@ -79,8 +81,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			fance.radius.y = 1;
 		}
 
-		if (keys[DIK_SPACE])//&&!preKeys[DIK_SPACE]
+
+
+		if (keys[DIK_SPACE] && !preKeys[DIK_SPACE])//&&!preKeys[DIK_SPACE]
 		{
+			//パーティクル生成フラグを立てる
 			particleFlag = true;
 		}
 
@@ -95,11 +100,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 					if (fanceParticle[i].currentTime == 0)
 					{
-						fanceParticle[i].pos = { fance.pos.x + fance.radius.x - GetRandPos(fance.radius).x,fance.pos.y + fance.radius.y - GetRandPos(fance.radius).y };
+
+						//fanceの場所からfanceの半径を引いた矩形の範囲にランダムな場所で生成
+						fanceParticle[i].pos = { fance.pos.x - fance.radius.x + GetRandPos(fance.radius).x,fance.pos.y - fance.radius.y + GetRandPos(fance.radius).y };
 
 						fanceParticle[i].radius = (float)GetRandMinMax(5, 10);
 						//fanceParticle[i].max = (float)GetRandMinMax(30, 80);
-						fanceParticle[i].currentTime++;
+						fanceParticle[i].currentTime++;//0だともう一度生成されるので、時間を進める
 						fanceParticle[i].color.color[0] = GetRandMinMax(000, 000);//赤
 						fanceParticle[i].color.color[1] = GetRandMinMax(000, 150);//緑
 						fanceParticle[i].color.color[2] = GetRandMinMax(150, 255);//青
@@ -107,7 +114,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						fanceParticle[i].velocity.x = (float)GetRandMinMax(-3, 3);//左右のブレ
 						fanceParticle[i].velocity.y = (float)GetRandMinMax(-10, -3);//どのくらい飛び上がるか
 						fanceParticle[i].boundPoint = -fanceParticle[i].velocity.y;//バウンドの場所を代入。床を作るイメージ
-						fanceParticle[i].raito = 0;
+						fanceParticle[i].raito = 0;//0~100%の割合を初期化
 
 						//1フレでより多く出したい時
 						if (i < kFanceParticleNum - 1)
@@ -132,10 +139,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				if (particleTimer < particleTimerMax)
 				{
-					particleTimer++;
+					particleTimer++;//パーティクル出現時間を進める
 				}
 				else
 				{
+					//パーティクル出現時間が指定した値を超えたら生成をやめる
 					particleFlag = false;
 					particleTimer = 0;
 				}
@@ -148,9 +156,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				//パーティクルが生きてる時
 				if (fanceParticle[i].currentTime != 0 && fanceParticle[i].currentTime < fanceParticle[0].lifeTime)
 				{
-					fanceParticle[i].currentTime++;
+					fanceParticle[i].currentTime++;//時間を進めていく
 
 					//x軸の移動を徐々に減速
+					//velocityが-0.5~0.5の範囲になったら速度を0にする(減速をやめる)
 					if (fanceParticle[i].velocity.x >= 0.5f || fanceParticle[i].velocity.x <= -0.5f)
 					{
 						if (fanceParticle[i].velocity.x < 0)
@@ -171,17 +180,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					//y軸の重力計算＆バウンド
 					if (fanceParticle[i].velocity.y < 10)
 					{
+						//重力を計算
 						fanceParticle[i].velocity.y += fanceParticle[i].acceleration.y;
 
 					}
+					//velocityがバウンドの値(仮想の床に当たったら)
 					if (fanceParticle[i].velocity.y > fanceParticle[i].boundPoint)
 					{
+						//y軸のvelocityを反転&減速して、仮想床の値を更新
 						fanceParticle[i].velocity.y *= -particleBound;
 						fanceParticle[i].boundPoint *= particleBound;
 					}
 
 
-
+					//ポジションの移動
 					fanceParticle[i].pos.x += fanceParticle[i].velocity.x;
 					//y軸の速度が0付近の時はポジションを動かさない。
 					if (fanceParticle[i].velocity.y > 1 || fanceParticle[i].velocity.y < -1)fanceParticle[i].pos.y += fanceParticle[i].velocity.y;
@@ -201,6 +213,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					//	fanceParticle[i].color.color[3] = 255;
 					//}
 
+					//デバッグ用
 					if (fanceParticle[i].pos.x <= min && fanceParticle[i].pos.x != 0)
 					{
 						min = fanceParticle[i].pos.x;
@@ -213,13 +226,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 				else
 				{
-
+					//初期化して生成出来るように
 					fanceParticle[i].currentTime = 0;
 					fanceParticle[i].velocity = { 0,0 };
 					fanceParticle[i].color.color[3] = 0;
 				}
 			}
 		}
+		//デバッグ用
 		timer++;
 		///                                                            ///
 		/// --------------------↑更新処理ここまで-------------------- ///
@@ -230,11 +244,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///                                                            ///
 
 		Novice::DrawBox(0, 0, 1280, 720, 0, 0x223344ff,kFillModeSolid);
+		//デバッグ用　fanceの範囲(emitter)を可視化
 		Novice::DrawBox(int(fance.pos.x - fance.radius.x), int(fance.pos.y - fance.radius.y), int(fance.radius.x * 2), int(fance.radius.y * 2), 0, WHITE, kFillModeWireFrame);
 
 		Novice::SetBlendMode(kBlendModeAdd);
 		for (int i = 0; i < kFanceParticleNum; i++)
 		{
+			//雑に円で描画してる
 			Novice::DrawEllipse(int(fanceParticle[i].pos.x), int(fanceParticle[i].pos.y), int(fanceParticle[i].radius), int(fanceParticle[i].radius), 0, ColorGradation({ fanceParticle[i].color.color[0],fanceParticle[i].color.color[1],fanceParticle[i].color.color[2],fanceParticle[i].color.color[3] }, { 0xff,0xff,0xff,0x00 }, fanceParticle[i].raito, 100), kFillModeSolid);
 		}
 
