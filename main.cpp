@@ -3,6 +3,7 @@
 #include "Color.h"
 #include "RandPlus.h"
 #include "ImGuiManager.h"
+#include "DrawPlus.h"
 const char kWindowTitle[] = "LC1A_20_ヒサイチ_コウキ";
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -36,7 +37,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//int particleTimer = 0;//発生持続時間をカウント
 
 
-
+	int whiteTexture = Novice::LoadTexture("white1x1.png");
 
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
@@ -91,137 +92,137 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 
-		
-			if (fance.particleSpawnFlag)
-			{
-				//パーティクルの生成
-				for (int i = 0; i < kFanceParticleNum; i++)
-				{
-					if (fanceParticle[i].currentTime == 0)
-					{
 
-						//fanceの場所からfanceの半径を引いた矩形の範囲にランダムな場所で生成
-						fanceParticle[i].pos = { fance.pos.x - fance.radius.x + GetRandPos(fance.radius).x,fance.pos.y - fance.radius.y + GetRandPos(fance.radius).y };
-
-						fanceParticle[i].radius = (float)GetRandMinMax(5, 10);
-						fanceParticle[i].currentTime++;//0だともう一度生成されるので、時間を進める
-						fanceParticle[i].color.color[0] = GetRandMinMax(000, 000);//赤
-						fanceParticle[i].color.color[1] = GetRandMinMax(000, 150);//緑
-						fanceParticle[i].color.color[2] = GetRandMinMax(150, 255);//青
-						fanceParticle[i].color.color[3] = 255;//透明度
-						fanceParticle[i].velocity.x = (float)GetRandMinMax(-3, 3);//左右のブレ
-						fanceParticle[i].velocity.y = (float)GetRandMinMax(-10, -3);//どのくらい飛び上がるか
-						fanceParticle[i].boundPoint = -fanceParticle[i].velocity.y;//バウンドの場所を代入。床を作るイメージ
-						fanceParticle[i].raito = 0;//0~100%の割合を初期化
-
-						//1フレでより多く出したい時
-						if (i < kFanceParticleNum - 1)
-						{
-							fanceParticle[i + 1].pos = { fance.pos.x - fance.radius.x + GetRandPos(fance.radius).x,fance.pos.y - fance.radius.y + GetRandPos(fance.radius).y };
-
-							fanceParticle[i + 1].radius = (float)GetRandMinMax(5, 10);
-							fanceParticle[i + 1].currentTime++;
-							fanceParticle[i + 1].color.color[0] = GetRandMinMax(000, 000);
-							fanceParticle[i + 1].color.color[1] = GetRandMinMax(000, 150);
-							fanceParticle[i + 1].color.color[2] = GetRandMinMax(150, 255);
-							fanceParticle[i + 1].color.color[3] = 255;
-							fanceParticle[i + 1].velocity.x = float(GetRandMinMax(-3, 3));
-							fanceParticle[i + 1].velocity.y = (float)GetRandMinMax(-10, -3);
-							fanceParticle[i + 1].boundPoint = -fanceParticle[i + 1].velocity.y;
-							fanceParticle[i + 1].raito = 0;
-						}
-						break;
-					}
-				}
-
-				if (fance.particleTimerCount < fance.particleTimerMax)
-				{
-					fance.particleTimerCount++;//パーティクル出現時間を進める
-				}
-				else
-				{
-					//パーティクル出現時間が指定した値を超えたら生成をやめる
-					fance.particleSpawnFlag = false;
-					fance.particleTimerCount = 0;
-				}
-			}
-			//パーティクルの移動
+		if (fance.particleSpawnFlag)
+		{
+			//パーティクルの生成
 			for (int i = 0; i < kFanceParticleNum; i++)
 			{
-
-
-				//パーティクルが生きてる時
-				if (fanceParticle[i].currentTime != 0 && fanceParticle[i].currentTime < fanceParticle[0].lifeTime)
+				if (fanceParticle[i].currentTime == 0)
 				{
-					fanceParticle[i].currentTime++;//時間を進めていく
 
-					//x軸の移動を徐々に減速
-					//velocityが-0.5~0.5の範囲になったら速度を0にする(減速をやめる)
-					if (fanceParticle[i].velocity.x >= 0.5f || fanceParticle[i].velocity.x <= -0.5f)
+					//fanceの場所からfanceの半径を引いた矩形の範囲にランダムな場所で生成
+					fanceParticle[i].pos = { fance.pos.x - fance.radius.x + GetRandPos(fance.radius).x,fance.pos.y - fance.radius.y + GetRandPos(fance.radius).y };
+
+					fanceParticle[i].radius = (float)GetRandMinMax(5, 10);
+					fanceParticle[i].currentTime++;//0だともう一度生成されるので、時間を進める
+					fanceParticle[i].color.color[0] = GetRandMinMax(000, 000);//赤
+					fanceParticle[i].color.color[1] = GetRandMinMax(000, 150);//緑
+					fanceParticle[i].color.color[2] = GetRandMinMax(150, 255);//青
+					fanceParticle[i].color.color[3] = 255;//透明度
+					fanceParticle[i].velocity.x = (float)GetRandMinMax(-3, 3);//左右のブレ
+					fanceParticle[i].velocity.y = (float)GetRandMinMax(-10, -3);//どのくらい飛び上がるか
+					fanceParticle[i].boundPoint = -fanceParticle[i].velocity.y;//バウンドの場所を代入。床を作るイメージ
+					fanceParticle[i].raito = 0;//0~100%の割合を初期化
+
+					//1フレでより多く出したい時
+					if (i < kFanceParticleNum - 1)
 					{
-						if (fanceParticle[i].velocity.x < 0)
-						{
-							fanceParticle[i].velocity.x += 0.1f;
-						}
-						if (fanceParticle[i].velocity.x > 0)
-						{
-							fanceParticle[i].velocity.x -= 0.1f;//fanceParticle[i].acceleration.x
-						}
+						fanceParticle[i + 1].pos = { fance.pos.x - fance.radius.x + GetRandPos(fance.radius).x,fance.pos.y - fance.radius.y + GetRandPos(fance.radius).y };
+
+						fanceParticle[i + 1].radius = (float)GetRandMinMax(5, 10);
+						fanceParticle[i + 1].currentTime++;
+						fanceParticle[i + 1].color.color[0] = GetRandMinMax(000, 000);
+						fanceParticle[i + 1].color.color[1] = GetRandMinMax(000, 150);
+						fanceParticle[i + 1].color.color[2] = GetRandMinMax(150, 255);
+						fanceParticle[i + 1].color.color[3] = 255;
+						fanceParticle[i + 1].velocity.x = float(GetRandMinMax(-3, 3));
+						fanceParticle[i + 1].velocity.y = (float)GetRandMinMax(-10, -3);
+						fanceParticle[i + 1].boundPoint = -fanceParticle[i + 1].velocity.y;
+						fanceParticle[i + 1].raito = 0;
 					}
-					else
+					break;
+				}
+			}
+
+			if (fance.particleTimerCount < fance.particleTimerMax)
+			{
+				fance.particleTimerCount++;//パーティクル出現時間を進める
+			}
+			else
+			{
+				//パーティクル出現時間が指定した値を超えたら生成をやめる
+				fance.particleSpawnFlag = false;
+				fance.particleTimerCount = 0;
+			}
+		}
+		//パーティクルの移動
+		for (int i = 0; i < kFanceParticleNum; i++)
+		{
+
+
+			//パーティクルが生きてる時
+			if (fanceParticle[i].currentTime != 0 && fanceParticle[i].currentTime < fanceParticle[0].lifeTime)
+			{
+				fanceParticle[i].currentTime++;//時間を進めていく
+
+				//x軸の移動を徐々に減速
+				//velocityが-0.5~0.5の範囲になったら速度を0にする(減速をやめる)
+				if (fanceParticle[i].velocity.x >= 0.5f || fanceParticle[i].velocity.x <= -0.5f)
+				{
+					if (fanceParticle[i].velocity.x < 0)
 					{
-						fanceParticle[i].velocity.x = 0;
+						fanceParticle[i].velocity.x += 0.1f;
 					}
-
-
-					//y軸の重力計算＆バウンド
-					if (fanceParticle[i].velocity.y < 10)
+					if (fanceParticle[i].velocity.x > 0)
 					{
-						//重力を計算
-						fanceParticle[i].velocity.y += fanceParticle[i].acceleration.y;
-
+						fanceParticle[i].velocity.x -= 0.1f;//fanceParticle[i].acceleration.x
 					}
-					//velocityがバウンドの値(仮想の床に当たったら)
-					if (fanceParticle[i].velocity.y > fanceParticle[i].boundPoint)
-					{
-						//y軸のvelocityを反転&減速して、仮想床の値を更新
-						fanceParticle[i].velocity.y *= -fance.particleBound;
-						fanceParticle[i].boundPoint *= fance.particleBound;
-					}
-
-
-					//ポジションの移動
-					fanceParticle[i].pos.x += fanceParticle[i].velocity.x;
-					//y軸の速度が0付近の時はポジションを動かさない。
-					if (fanceParticle[i].velocity.y > 1 || fanceParticle[i].velocity.y < -1)fanceParticle[i].pos.y += fanceParticle[i].velocity.y;
-
-					//色のグラデーションの変化の割合を計算
-					if (fanceParticle[i].raito < 100)fanceParticle[i].raito += 100 / fanceParticle[0].lifeTime;
-
-					//色
-
-					//透明スタートなら使う。
-					//if (fanceParticle[i].color.color[3] < 255)
-					//{
-					//	fanceParticle[i].color.color[3] += 10;
-					//}
-					//if (fanceParticle[i].color.color[3] > 255)
-					//{
-					//	fanceParticle[i].color.color[3] = 255;
-					//}
-
-					
 				}
 				else
 				{
-					//初期化して生成出来るように
-					fanceParticle[i].currentTime = 0;
-					fanceParticle[i].velocity = { 0,0 };
-					fanceParticle[i].color.color[3] = 0;
+					fanceParticle[i].velocity.x = 0;
 				}
+
+
+				//y軸の重力計算＆バウンド
+				if (fanceParticle[i].velocity.y < 10)
+				{
+					//重力を計算
+					fanceParticle[i].velocity.y += fanceParticle[i].acceleration.y;
+
+				}
+				//velocityがバウンドの値(仮想の床に当たったら)
+				if (fanceParticle[i].velocity.y > fanceParticle[i].boundPoint)
+				{
+					//y軸のvelocityを反転&減速して、仮想床の値を更新
+					fanceParticle[i].velocity.y *= -fance.particleBound;
+					fanceParticle[i].boundPoint *= fance.particleBound;
+				}
+
+
+				//ポジションの移動
+				fanceParticle[i].pos.x += fanceParticle[i].velocity.x;
+				//y軸の速度が0付近の時はポジションを動かさない。
+				if (fanceParticle[i].velocity.y > 1 || fanceParticle[i].velocity.y < -1)fanceParticle[i].pos.y += fanceParticle[i].velocity.y;
+
+				//色のグラデーションの変化の割合を計算
+				if (fanceParticle[i].raito < 100)fanceParticle[i].raito += 100 / fanceParticle[0].lifeTime;
+
+				//色
+
+				//透明スタートなら使う。
+				//if (fanceParticle[i].color.color[3] < 255)
+				//{
+				//	fanceParticle[i].color.color[3] += 10;
+				//}
+				//if (fanceParticle[i].color.color[3] > 255)
+				//{
+				//	fanceParticle[i].color.color[3] = 255;
+				//}
+
+
 			}
-		
-		
+			else
+			{
+				//初期化して生成出来るように
+				fanceParticle[i].currentTime = 0;
+				fanceParticle[i].velocity = { 0,0 };
+				fanceParticle[i].color.color[3] = 0;
+			}
+		}
+
+
 		///                                                            ///
 		/// --------------------↑更新処理ここまで-------------------- ///
 		///                                                            ///
@@ -234,11 +235,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//デバッグ用　fanceの範囲(emitter)を可視化
 		Novice::DrawBox(int(fance.pos.x - fance.radius.x), int(fance.pos.y - fance.radius.y), int(fance.radius.x * 2), int(fance.radius.y * 2), 0, WHITE, kFillModeWireFrame);
 
-		Novice::SetBlendMode(kBlendModeAdd);
+		Novice::SetBlendMode(kBlendModeNormal);
 		for (int i = 0; i < kFanceParticleNum; i++)
 		{
 			//雑に円で描画してる
-			Novice::DrawEllipse(int(fanceParticle[i].pos.x), int(fanceParticle[i].pos.y), int(fanceParticle[i].radius), int(fanceParticle[i].radius), 0, ColorGradation({ fanceParticle[i].color.color[0],fanceParticle[i].color.color[1],fanceParticle[i].color.color[2],fanceParticle[i].color.color[3] }, { 0xff,0xff,0xff,0x00 }, fanceParticle[i].raito, 100), kFillModeSolid);
+			//Novice::DrawEllipse(int(fanceParticle[i].pos.x), int(fanceParticle[i].pos.y), int(fanceParticle[i].radius), int(fanceParticle[i].radius), 0, ColorGradation({ fanceParticle[i].color.color[0],fanceParticle[i].color.color[1],fanceParticle[i].color.color[2],fanceParticle[i].color.color[3] }, { 0xff,0xff,0xff,0x00 }, fanceParticle[i].raito, 100), kFillModeSolid);
+			DrawQuadAlpha(
+				fanceParticle[i].pos,
+				{ fanceParticle[i].radius,
+				fanceParticle[i].radius },
+				{ 1,1 },
+				-fanceParticle[i].velocity.x,
+				{0,0},
+				{1,1},
+				whiteTexture,
+				ColorGradation(
+					{ fanceParticle[i].color.color[0],fanceParticle[i].color.color[1],fanceParticle[i].color.color[2],fanceParticle[i].color.color[3] }, 
+					{ 0xff,0xff,0xff,0x00 }, 
+					fanceParticle[i].raito, 100));
+
 		}
 
 		Novice::SetBlendMode(kBlendModeNormal);
@@ -251,7 +266,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::SliderFloat("fance.radius.y", &fance.radius.y, 1, 1000);
 
 		ImGui::End();
-		
+
 		///                                                            ///
 		/// --------------------↑描画処理ここまで-------------------- ///
 		///                                                            ///
